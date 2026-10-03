@@ -142,7 +142,7 @@ async function send(){
     const raw=await res.text();let j={};try{j=JSON.parse(raw)}catch(e){}
     if(!res.ok)throw{code:res.status,msg:j.error||('HTTP '+res.status+' '+raw.slice(0,120))};
     out=j.text||'';record(out);
-  }catch(e){out='⚠️ '+(e&&e.code===429?'Too many requests – please wait a minute and try again.':'Something went wrong. Please try again.')+(e&&e.msg?' ('+e.msg+')':(e&&e.message?' ('+e.message+')':''))}
+  }catch(e){out=(e&&/503|UNAVAILABLE|high demand/.test(e.msg||''))?'⚠️ The AI service is busy right now. Please wait a few seconds and press send again.':'⚠️ '+(e&&e.code===429?'Too many requests – please wait a minute and try again.':'Something went wrong. Please try again.')+(e&&e.msg?' ('+e.msg+')':(e&&e.message?' ('+e.message+')':''))}
   $('conf').value='';c.msgs.push({role:'assistant',content:out||'…'});
   busy=false;save();renderHist();renderMsgs();
 }
